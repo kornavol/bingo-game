@@ -1,19 +1,22 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 /* function to shufle an array */
 import arrayShuffle from 'array-shuffle'
 
 import './App.scss'
 import Box from '../components/shared/Box'
+
 import Tile from '../components/bingo/Tile'
+import Content from '../components/bingo/Content'
 
 /* create array from of 100 items as bingo umbers */
 const initialSet = [...Array.from({ length: 100 }, (_, i) => i)]
 
 function App() {
-  const [data, setData] = useState(initialSet)
+  const [fullSet, setFullSet] = useState(initialSet)
   const [deck, setDeck] = useState(sliceNewDeck(initialSet, 25))
   const [state, setState] = useState({ checked: {}, won: false })
+  const [currItem, setCurrItem] = useState()
 
   function sliceNewDeck(data, range) {
     return arrayShuffle(data.slice(0, range))
@@ -42,13 +45,32 @@ function App() {
     )
   }
 
+  function getRndNum(data) {
+    return data[Math.floor(Math.random() * data.length)]
+  }
+
   const shuffleBtnHandler = () => {
     setDeck(sliceNewDeck(initialSet, 25))
   }
 
+  useEffect(() => {
+    setCurrItem(getRndNum(fullSet))
+  }, [fullSet])
+
   return (
     <div className="App">
       <h1>Bingo game</h1>
+
+      <div id="content">
+        <Box>
+          <Content>{currItem}</Content>
+        </Box>
+
+        <button onClick={() => setCurrItem(getRndNum(fullSet))}>
+          next number
+        </button>
+      </div>
+
       <div id="board">
         <button onClick={shuffleBtnHandler}>Shuffle</button>
         <div className="grid" id="board">
