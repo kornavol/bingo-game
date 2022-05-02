@@ -1,3 +1,5 @@
+@use '../styles/modules/thema';
+
 @mixin flex-align($justify: center, $alignItems: center) {
   display: flex;
   justify-content: $justify;
@@ -11,37 +13,57 @@
 
 .App {
   margin: auto;
-}
+  min-width: 300px;
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  justify-content: center;
-  margin: 2vw;
-}
+  h1,
+  h4 {
+    font-family: 'Raleway', 'Open Sans', sans-serif;
+    margin: 0;
+    line-height: 1;
+  }
 
-.tile {
-  @include flex-align(center, center);
-  @include size(100%, 100%);
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-auto-rows: 20%;
+    justify-content: center;
 
-  font-size: calc(7px + 1vw);
+    margin: 2vw;
+  }
 
-  cursor: pointer;
-}
+  .tile {
+    @include flex-align(center, center);
+    @include size(100%, 100%);
 
-.tile--set {
-  background: #ffeb3b;
-}
+    font-size: calc(7px + 1vw);
+    padding: 7%;
 
-.tile--win {
-  background: #69bf94;
-}
+    cursor: pointer;
+  }
 
-.content {
-  @include flex-align(center, center);
-  @include size(100%, 100%);
+  .tile--set {
+    background: #ffeb3b;
+  }
 
-  font-weight: bold;
+  .tile--win {
+    background: #69bf94;
+  }
 
-  cursor: pointer;
+  .content {
+    @include flex-align(center, center);
+    @include size(100%, 100%);
+
+    font-weight: bold;
+    font-size: calc(50px + 1vw);
+    padding: 7%;
+
+    cursor: pointer;
+
+    transition: 0.5s ease-in-out;
+
+    @media (max-width:500px) {
+      font-size: calc(20px + 2vw);
+      padding: auto;
+    }
+  }
 }

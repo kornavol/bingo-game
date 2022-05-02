@@ -1,0 +1,78 @@
+@use './modules/thema';
+
+$btn-width: 250px !default;
+$btn-height: 80px !default;
+$btn-full: $btn-height + $btn-width !default;
+$btn-half: $btn-full/2 !default;
+
+@mixin size($width, $height) {
+  width: $width;
+  height: $height;
+}
+
+@mixin absolute($top, $right, $bottom, $left) {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+button {
+  text-decoration: none;
+  color: black;
+}
+
+[class^='btn-'] {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  @include size($btn-width, $btn-height);
+  max-width: $btn-width;
+  margin: 1rem auto;
+  text-transform: uppercase;
+  border: 1px solid currentColor;
+  background-color: transparent;
+
+  @media (max-width: 500px) {
+    text-transform: none;
+  }
+}
+
+.btn-0 {
+  /* overwrite default */
+  @include size(100%, 100%);
+  margin: auto;
+  border: none;
+
+  $btn-color: thema.$prima-color;
+  $btn-color-dark: thema.$second-color;
+  color: $btn-color;
+
+  cursor: pointer;
+  font-size: calc(5px + 1vw);
+
+  &:after,
+  &:before {
+    transition: 0.5s ease-in-out;
+  }
+
+  &:before {
+    content: '';
+    @include absolute(0, 0, 0, 0);
+    background-color: $btn-color-dark;
+    transform: translateX(-100%);
+  }
+
+  &:hover {
+    color: tint($btn-color, 75%);
+
+    &:before {
+      transform: translateX(0);
+    }
+  }
+
+  @media (max-width: 700px) {
+    padding: 20px;
+  }
+}

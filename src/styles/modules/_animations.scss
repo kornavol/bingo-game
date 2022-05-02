@@ -1,0 +1,53 @@
+.fade-in {
+  animation: translate-left-center 1s;
+}
+
+.fade-out {
+  animation: translate-center-rigth 1s;
+}
+
+.flip-animation {
+  animation: mirrorflip 1s 0s linear infinite;
+}
+
+@keyframes translate-left-center {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes translate-center-rigth {
+  from {
+    transform: translateX(0%);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes mirrorflip {
+  0% {
+    transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+  }
+  50% {
+    transform: scale(-1, 1);
+    -webkit-transform: scale(-1, 1);
+    -moz-transform: scale(-1, 1);
+    -o-transform: scale(-1, 1);
+    -ms-transform: scale(-1, 1);
+  }
+  100% {
+    transform: scale(1, 1);
+    -webkit-transform: scale(1, 1);
+    -moz-transform: scale(1, 1);
+    -o-transform: scale(1, 1);
+    -ms-transform: scale(1, 1);
+  }
+}

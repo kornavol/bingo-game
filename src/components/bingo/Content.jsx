@@ -1,11 +1,11 @@
-import React from 'react';
+import React from 'react'
 
-const Content = ({ children }) => {
-    return (
-        <div className="content">
-          {children}
-        </div>
-      );
+const Content = ({ children, reference }) => {
+  return (
+    <div ref={reference} className="content  fade-in">
+      {children}
+    </div>
+  )
 }
 
-export default Content;
+export default Content

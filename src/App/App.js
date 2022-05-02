@@ -1,22 +1,31 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 /* function to shufle an array */
 import arrayShuffle from 'array-shuffle'
 
 import './App.scss'
+import '../styles/modules/_animations.scss'
+import '../styles/buttons.scss'
+
 import Box from '../components/shared/Box'
+import Confetti from '../components/effects/Confetti'
 
 import Tile from '../components/bingo/Tile'
 import Content from '../components/bingo/Content'
+import ShuffleBtn from '../components/bingo/ShuffleBtn'
 
 /* create array from of 100 items as bingo umbers */
 const initialSet = [...Array.from({ length: 100 }, (_, i) => i)]
+const initPlayerState = { checked: { 12: true }, won: false }
 
 function App() {
   const [fullSet, setFullSet] = useState(initialSet)
   const [deck, setDeck] = useState(sliceNewDeck(initialSet, 25))
-  const [state, setState] = useState({ checked: {}, won: false })
+  const [state, setState] = useState(initPlayerState)
   const [currItem, setCurrItem] = useState()
+  const [flip, setFlip] = useState(true)
+
+  const numRef = useRef(null)
 
   function sliceNewDeck(data, range) {
     return arrayShuffle(data.slice(0, range))
@@ -51,45 +60,71 @@ function App() {
 
   const shuffleBtnHandler = () => {
     setDeck(sliceNewDeck(initialSet, 25))
+    setState(initPlayerState)
+    setFlip(true)
   }
 
   useEffect(() => {
     setCurrItem(getRndNum(fullSet))
   }, [fullSet])
 
+  useEffect(() => {
+    flip &&
+      setTimeout(() => {
+        setFlip(false)
+      }, 2000)
+  }, [flip])
+
+  useEffect(() => {
+    setTimeout(() => {
+      numRef.current.classList.remove('fade-in')
+    }, 1000)
+  }, [currItem])
+
   return (
     <div className="App">
       <h1>Bingo game</h1>
 
       <div id="content">
-        <Box>
-          <Content>{currItem}</Content>
+        <Box classNames="box-1">
+          <Content reference={numRef}>{currItem}</Content>
         </Box>
 
-        <button onClick={() => setCurrItem(getRndNum(fullSet))}>
-          next number
+        {/* <button onClick={() => setCurrItem(getRndNum(fullSet))}> */}
+        <button
+          className='btn-0'
+          onClick={() => {
+            if (numRef.current.classList.contains('fade-in') === false) {
+              numRef.current.classList.add('fade-in')
+              setFullSet((prev) => prev.filter((el) => el !== currItem))
+            }
+          }}
+        >
+          Next number
         </button>
       </div>
 
       <div id="board">
-        <button onClick={shuffleBtnHandler}>Shuffle</button>
         <div className="grid" id="board">
-          {deck.map((item, i) => (
-            <Box classNames="box-0">
-              <Tile
-                isSet={!!state.checked[i]}
-                /* add item to state */
-                onToggle={(e) => {
-                  toggle(i)
-                }}
+          {deck.map((item, i) => {
+            if (i === 12) {
+              return <ShuffleBtn key='shuffle-btn' disabled={flip} onClick={shuffleBtnHandler} />
+            }
+
+            return (
+              <Box
+                key={item}
+                classNames={`box-0 ${flip && 'flip-animation'}`}
               >
-                {item}
-              </Tile>
-            </Box>
-          ))}
+                <Tile isSet={!!state.checked[i]} onToggle={(e) => toggle(i)}>
+                  {item}
+                </Tile>
+              </Box>
+            )
+          })}
         </div>
-        {state.won ? <div>true</div> : <div>false</div>}
       </div>
+      {state.won && <Confetti />}
     </div>
   )
 }
