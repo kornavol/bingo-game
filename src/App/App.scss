@@ -1,0 +1,10 @@
+.App {
+  margin: auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  justify-content: center;
+  margin: 2vw;
+}
