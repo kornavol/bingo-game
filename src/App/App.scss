@@ -1,3 +1,14 @@
+@mixin flex-align($justify: center, $alignItems: center) {
+  display: flex;
+  justify-content: $justify;
+  align-items: $alignItems;
+}
+
+@mixin size($width, $height) {
+  width: $width;
+  height: $height;
+}
+
 .App {
   margin: auto;
 }
@@ -7,4 +18,21 @@
   grid-template-columns: repeat(5, 1fr);
   justify-content: center;
   margin: 2vw;
+}
+
+.tile {
+  @include flex-align(center, center);
+  @include size(100%, 100%);
+
+  font-size: calc(7px + 1vw);
+
+  cursor: pointer;
+}
+
+.tile--set {
+  background: #ffeb3b;
+}
+
+.tile--win {
+  background: #69bf94;
 }
