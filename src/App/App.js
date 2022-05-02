@@ -11,7 +11,7 @@ console.log('🚀 ~ file: App.js ~ line 5 ~ initialSet', initialSet)
 function App() {
   const [data, setData] = useState(initialSet)
   const [deck, setDeck] = useState(sliceNewDeck(initialSet, 25))
-  const [state, setState] = useState({ checked: {} })
+  const [state, setState] = useState({ checked: {}, won: false })
 
   function sliceNewDeck(data, range) {
     return data.slice(0, range)
@@ -19,7 +19,25 @@ function App() {
 
   function toggle(id) {
     const checked = { ...state.checked, [id]: !state.checked[id] }
-    setState({ ...state, checked })
+    const won = isWon(checked)
+    setState({ ...state, checked, won })
+  }
+
+  /*detecting if lines are filled in (based on bingo rules) and there is a win*/
+  function isWon(checked) {
+    const range = [0, 1, 2, 3, 4]
+    return (
+      undefined !==
+        range.find((row) =>
+          range.every((column) => checked[row * 5 + column])
+        ) ||
+      undefined !==
+        range.find((column) =>
+          range.every((row) => checked[row * 5 + column])
+        ) ||
+      range.every((index) => checked[index * 5 + index]) ||
+      range.every((index) => checked[index * 5 + 4 - index])
+    )
   }
 
   return (
@@ -42,6 +60,7 @@ function App() {
             </Box>
           ))}
         </div>
+        {state.won ? <div>true</div> : <div>false</div>}
       </div>
     </div>
   )
