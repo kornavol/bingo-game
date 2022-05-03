@@ -6,7 +6,7 @@ Simple bingo game for two players.
 
 This project was bootstrapped with [Create React App](https://reactjs.org/docs/create-a-new-react-app.html).
 
-Page: 
+Page: <https://kornavol.github.io/bingo-game>
 
 ## Installing
 
