@@ -20,7 +20,8 @@ const initPlayerState = { checked: { 12: true }, won: false }
 
 function App() {
   const [fullSet, setFullSet] = useState(initialSet)
-  const [deck, setDeck] = useState(sliceNewDeck(initialSet, 25))
+  // const [deck, setDeck] = useState(sliceNewDeck(initialSet, 25))
+  const [deck, setDeck] = useState({ player1: sliceNewDeck(initialSet, 25), player2: sliceNewDeck(initialSet, 25) })
   const [state, setState] = useState(initPlayerState)
   const [currItem, setCurrItem] = useState()
   const [flip, setFlip] = useState(true)
@@ -58,8 +59,17 @@ function App() {
     return data[Math.floor(Math.random() * data.length)]
   }
 
-  const shuffleBtnHandler = () => {
-    setDeck(sliceNewDeck(initialSet, 25))
+  const shuffleBtnHandler = (player1, player2) => {
+    player1 &&
+      setDeck((prev) => {
+        return { ...prev, [player1]: sliceNewDeck(initialSet, 25) }
+      })
+
+    player2 &&
+      setDeck((prev) => {
+        return { ...prev, [player2]: sliceNewDeck(initialSet, 25) }
+      })
+
     setState(initPlayerState)
     setFlip(true)
   }
@@ -92,7 +102,7 @@ function App() {
 
         {/* <button onClick={() => setCurrItem(getRndNum(fullSet))}> */}
         <button
-          className='btn-1'
+          className="btn-1"
           onClick={() => {
             if (numRef.current.classList.contains('fade-in') === false) {
               numRef.current.classList.add('fade-in')
@@ -106,16 +116,19 @@ function App() {
 
       <div id="board">
         <div className="grid" id="board">
-          {deck.map((item, i) => {
+          {deck.player1.map((item, i) => {
             if (i === 12) {
-              return <ShuffleBtn key='shuffle-btn' disabled={flip} onClick={shuffleBtnHandler} />
+              return (
+                <ShuffleBtn
+                  key="shuffle-btn"
+                  disabled={flip}
+                  onClick={shuffleBtnHandler}
+                />
+              )
             }
 
             return (
-              <Box
-                key={item}
-                classNames={`box-0 ${flip && 'flip-animation'}`}
-              >
+              <Box key={item} classNames={`box-0 ${flip && 'flip-animation'}`}>
                 <Tile isSet={!!state.checked[i]} onToggle={(e) => toggle(i)}>
                   {item}
                 </Tile>
