@@ -92,7 +92,7 @@ function App() {
 
         {/* <button onClick={() => setCurrItem(getRndNum(fullSet))}> */}
         <button
-          className='btn-0'
+          className='btn-1'
           onClick={() => {
             if (numRef.current.classList.contains('fade-in') === false) {
               numRef.current.classList.add('fade-in')

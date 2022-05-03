@@ -1,9 +1,8 @@
 @use './modules/thema';
 
-$btn-width: 250px !default;
-$btn-height: 80px !default;
-$btn-full: $btn-height + $btn-width !default;
-$btn-half: $btn-full/2 !default;
+$btn-width: 125px !default;
+$btn-height: 40px !default;
+$border: 1px solid currentColor;
 
 @mixin size($width, $height) {
   width: $width;
@@ -31,7 +30,7 @@ button {
   max-width: $btn-width;
   margin: 1rem auto;
   text-transform: uppercase;
-  border: 1px solid currentColor;
+  border: $border;
   background-color: transparent;
 
   @media (max-width: 500px) {
@@ -74,5 +73,22 @@ button {
 
   @media (max-width: 700px) {
     padding: 20px;
+  }
+}
+
+.btn-1 {
+   /* overwrite default */
+  width: 25%;
+  
+  $btn-color: thema.$prima-color;
+  $btn-color-dark: thema.$second-color;
+  color: $btn-color;
+
+  cursor: pointer;
+
+  transition: 0.5s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
   }
 }
