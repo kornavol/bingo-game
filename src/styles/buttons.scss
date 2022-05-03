@@ -77,9 +77,9 @@ button {
 }
 
 .btn-1 {
-   /* overwrite default */
+  /* overwrite default */
   width: 25%;
-  
+
   $btn-color: thema.$prima-color;
   $btn-color-dark: thema.$second-color;
   color: $btn-color;

@@ -22,6 +22,14 @@
     line-height: 1;
   }
 
+  #board {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -61,7 +69,7 @@
 
     transition: 0.5s ease-in-out;
 
-    @media (max-width:500px) {
+    @media (max-width: 500px) {
       font-size: calc(20px + 2vw);
       padding: auto;
     }

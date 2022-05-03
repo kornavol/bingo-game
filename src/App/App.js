@@ -16,15 +16,24 @@ import ShuffleBtn from '../components/bingo/ShuffleBtn'
 
 /* create array from of 100 items as bingo umbers */
 const initialSet = [...Array.from({ length: 100 }, (_, i) => i)]
-const initPlayerState = { checked: { 12: true }, won: false }
+const initPlayerState = {
+  player1: { checked: { 12: true }, won: false },
+  player2: { checked: { 12: true }, won: false }
+}
+const initialFlip = { player1: true, player2: true }
 
 function App() {
+  /* Full bingo set randomly get a new tile  */
   const [fullSet, setFullSet] = useState(initialSet)
-  // const [deck, setDeck] = useState(sliceNewDeck(initialSet, 25))
-  const [deck, setDeck] = useState({ player1: sliceNewDeck(initialSet, 25), player2: sliceNewDeck(initialSet, 25) })
+  const [deck, setDeck] = useState({
+    player1: sliceNewDeck(initialSet, 25),
+    player2: sliceNewDeck(initialSet, 25)
+  })
+  /* Boar's state. Which tiles are filled, a status of a win   */
   const [state, setState] = useState(initPlayerState)
   const [currItem, setCurrItem] = useState()
-  const [flip, setFlip] = useState(true)
+  /* For flip animation */
+  const [flip, setFlip] = useState(initialFlip)
 
   const numRef = useRef(null)
 
@@ -32,13 +41,17 @@ function App() {
     return arrayShuffle(data.slice(0, range))
   }
 
-  function toggle(id) {
-    const checked = { ...state.checked, [id]: !state.checked[id] }
+  /* Checking a status based on the current board situation */
+  function toggle(id, player) {
+    const checked = {
+      ...state[player].checked,
+      [id]: !state[player].checked[id]
+    }
     const won = isWon(checked)
-    setState({ ...state, checked, won })
+    setState({ ...state, [player]: { checked, won } })
   }
 
-  /*detecting if lines are filled in (based on bingo rules) and there is a win*/
+  /* Detecting if lines are filled in (based on bingo rules) and there is a win*/
   function isWon(checked) {
     const range = [0, 1, 2, 3, 4]
     return (
@@ -59,19 +72,28 @@ function App() {
     return data[Math.floor(Math.random() * data.length)]
   }
 
-  const shuffleBtnHandler = (player1, player2) => {
-    player1 &&
+  const shuffleBtnHandler = (player) => {
+    if (player === 'player1') {
       setDeck((prev) => {
-        return { ...prev, [player1]: sliceNewDeck(initialSet, 25) }
+        return { ...prev, [player]: sliceNewDeck(initialSet, 25) }
       })
+      setState((prev) => {
+        return { ...prev, [player]: { checked: { 12: true }, won: false } }
+      })
+    }
 
-    player2 &&
+    if (player === 'player2') {
       setDeck((prev) => {
-        return { ...prev, [player2]: sliceNewDeck(initialSet, 25) }
+        return { ...prev, [player]: sliceNewDeck(initialSet, 25) }
       })
+      setState((prev) => {
+        return { ...prev, [player]: { checked: { 12: true }, won: false } }
+      })
+    }
 
-    setState(initPlayerState)
-    setFlip(true)
+    setFlip((prev) => {
+      return { ...prev, [player]: true }
+    })
   }
 
   useEffect(() => {
@@ -79,10 +101,12 @@ function App() {
   }, [fullSet])
 
   useEffect(() => {
-    flip &&
+    if (flip.player1 || flip.player2) {
+      const resetFlip = { player1: false, player2: false }
       setTimeout(() => {
-        setFlip(false)
+        setFlip(resetFlip)
       }, 2000)
+    }
   }, [flip])
 
   useEffect(() => {
@@ -100,8 +124,8 @@ function App() {
           <Content reference={numRef}>{currItem}</Content>
         </Box>
 
-        {/* <button onClick={() => setCurrItem(getRndNum(fullSet))}> */}
         <button
+          id="getNextNum-btn"
           className="btn-1"
           onClick={() => {
             if (numRef.current.classList.contains('fade-in') === false) {
@@ -115,21 +139,55 @@ function App() {
       </div>
 
       <div id="board">
-        <div className="grid" id="board">
+        <div className="grid" id="player-1">
           {deck.player1.map((item, i) => {
             if (i === 12) {
               return (
                 <ShuffleBtn
                   key="shuffle-btn"
-                  disabled={flip}
-                  onClick={shuffleBtnHandler}
+                  disabled={flip.player1}
+                  onClick={() => shuffleBtnHandler('player1')}
                 />
               )
             }
 
             return (
-              <Box key={item} classNames={`box-0 ${flip && 'flip-animation'}`}>
-                <Tile isSet={!!state.checked[i]} onToggle={(e) => toggle(i)}>
+              <Box
+                key={item}
+                classNames={`box-0 ${flip.player1 && 'flip-animation'}`}
+              >
+                <Tile
+                  isSet={!!state.player1.checked[i]}
+                  onToggle={(e) => toggle(i, 'player1')}
+                >
+                  {item}
+                </Tile>
+              </Box>
+            )
+          })}
+        </div>
+
+        <div className="grid" id="player-2">
+          {deck.player2.map((item, i) => {
+            if (i === 12) {
+              return (
+                <ShuffleBtn
+                  key="shuffle-btn"
+                  disabled={flip.player2}
+                  onClick={() => shuffleBtnHandler('player2')}
+                />
+              )
+            }
+
+            return (
+              <Box
+                key={item}
+                classNames={`box-0 ${flip.player2 && 'flip-animation'}`}
+              >
+                <Tile
+                  isSet={!!state.player2.checked[i]}
+                  onToggle={(e) => toggle(i, 'player2')}
+                >
                   {item}
                 </Tile>
               </Box>
@@ -137,7 +195,7 @@ function App() {
           })}
         </div>
       </div>
-      {state.won && <Confetti />}
+      {state.player1.won || state.player2.won ? <Confetti /> : null}
     </div>
   )
 }
