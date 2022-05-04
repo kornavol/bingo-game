@@ -113,23 +113,27 @@ function App() {
   useEffect(() => {
     if (flip.player1 || flip.player2) {
       const resetFlip = { player1: false, player2: false }
-      setTimeout(() => {
+      const timeoutFlip = setTimeout(() => {
         setFlip(resetFlip)
       }, 2000)
+
+      return () =>  clearTimeout(timeoutFlip)
     }
   }, [flip])
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeoutFadeIn = setTimeout(() => {
       numRef.current.classList.remove('fade-in')
     }, 1000)
+    return () =>  clearTimeout(timeoutFadeIn)
   }, [currItem])
 
   useEffect(() => {
     if (confetti) {
-      setTimeout(() => {
+      const timeoutConf = setTimeout(() => {
         setConfetti(false)
       }, 5000)
+      return () => clearTimeout(timeoutConf)
     }
   }, [confetti])
 
@@ -213,7 +217,6 @@ function App() {
           })}
         </div>
       </div>
-      {/* {state.player1.won || state.player2.won ? <Confetti /> : null} */}
       {confetti ? <Confetti /> : null}
     </div>
   )

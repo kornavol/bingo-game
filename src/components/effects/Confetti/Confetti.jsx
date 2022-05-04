@@ -65,7 +65,7 @@ const Confetti = () => {
       }
 
       let particle = {}
-      let remainingFlakes = 0
+      // let remainingFlakes = 0
       for (let i = 0; i < maxConfettis; i++) {
         particle = particles[i]
 
@@ -73,7 +73,7 @@ const Confetti = () => {
         particle.y += (Math.cos(particle.d) + 3 + particle.r / 2) / 2
         particle.tilt = Math.sin(particle.tiltAngle - i / 3) * 15
 
-        if (particle.y <= H) remainingFlakes++
+        // if (particle.y <= H) remainingFlakes++
 
         // If a confetti has fluttered out of view,
         // bring it back to above the viewport and let if re-fall.
