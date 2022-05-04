@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 
 /* function to shufle an array */
 import arrayShuffle from 'array-shuffle'
+/* _.isEqual method to compare two object by values */
+import _ from 'lodash'
 
 import './App.scss'
 import '../styles/modules/_animations.scss'
@@ -34,6 +36,8 @@ function App() {
   const [currItem, setCurrItem] = useState()
   /* For flip animation */
   const [flip, setFlip] = useState(initialFlip)
+  /* launch confetti */
+  const [confetti, setConfetti] = useState(false)
 
   const numRef = useRef(null)
 
@@ -48,24 +52,30 @@ function App() {
       [id]: !state[player].checked[id]
     }
     const won = isWon(checked)
+
+    if (won && !_.isEqual(state[player].won, won)) setConfetti(true)
+
     setState({ ...state, [player]: { checked, won } })
   }
 
   /* Detecting if lines are filled in (based on bingo rules) and there is a win*/
   function isWon(checked) {
     const range = [0, 1, 2, 3, 4]
-    return (
-      undefined !==
-        range.find((row) =>
-          range.every((column) => checked[row * 5 + column])
-        ) ||
-      undefined !==
-        range.find((column) =>
-          range.every((row) => checked[row * 5 + column])
-        ) ||
-      range.every((index) => checked[index * 5 + index]) ||
-      range.every((index) => checked[index * 5 + 4 - index])
+
+    /* define each case separately and sent it as object of state */
+    const row = range.filter((row) =>
+      range.every((column) => checked[row * 5 + column])
     )
+    const column = range.filter((column) =>
+      range.every((row) => checked[row * 5 + column])
+    )
+    const lDiagonal = range.every((index) => checked[index * 5 + index])
+    const rDiagonal = range.every((index) => checked[index * 5 + 4 - index])
+
+    if (row.length > 0 || column.length > 0 || lDiagonal || rDiagonal) {
+      return { row, column, lDiagonal, rDiagonal }
+    }
+    return null
   }
 
   function getRndNum(data) {
@@ -114,6 +124,14 @@ function App() {
       numRef.current.classList.remove('fade-in')
     }, 1000)
   }, [currItem])
+
+  useEffect(() => {
+    if (confetti) {
+      setTimeout(() => {
+        setConfetti(false)
+      }, 5000)
+    }
+  }, [confetti])
 
   return (
     <div className="App">
@@ -195,7 +213,8 @@ function App() {
           })}
         </div>
       </div>
-      {state.player1.won || state.player2.won ? <Confetti /> : null}
+      {/* {state.player1.won || state.player2.won ? <Confetti /> : null} */}
+      {confetti ? <Confetti /> : null}
     </div>
   )
 }
